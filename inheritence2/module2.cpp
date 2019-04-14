@@ -3,6 +3,7 @@
 #include "game.h"
 #include "car.h" // Modules need to import car header to make use of car_table
 
+#include <string.h>
 #include <typeinfo>
 
 
@@ -12,26 +13,38 @@
    explicitly define their dependencies.
 **/
 
-#define CAR_TRAITS( type, car ) ( (type) == 1) ? \
-                           static_cast<automatic_traits_type *>(car_table[(car)].traits) : \
-                           static_cast<car_traits_type *>(car_table[(car)].traits) 
-			   
+
+void print_car(int id);
+		   
 
 int module2_main() {
-    int car;
 
-    car = car_lookup("Porsche");
-    printf("%s is painted %s\n",car_table[car].name, car_table[car].traits->color);
-
-    int car2 = car_lookup("Toyota");
-    printf("%s has a top speed of %d\n",car_table[car2].name, static_cast<automatic_traits_type *>(car_table[car2].traits)->top_speed);
-
-    int car3 = car_lookup("Honda");
-    int type = car_table[car3].type;
-
-    printf("%d type", type);
-    printf("type: %s \n", typeid(static_cast<automatic_traits_type *>(car_table[car3].traits)).name() );
-    printf("type: %s \n", typeid(CAR_TRAITS(type,car3)).name() );
-    //printf("%s has a top speed of %d\n",car_table[car3].name, CAR_TRAITS(type,car3)->top_speed);
+    for( int sn = 0; ; sn++) {
+        if (car_table[sn].name == nullptr)
+            break;
+        print_car(sn);
+    }
 }
 
+void print_car(int id) {
+    printf("Car: %s\n", car_table[id].name);
+    printf("color: %s\n", car_table[id].traits.color);
+
+    char buf[256] = {};
+    strcpy(buf, "upgrade1: ");
+    char buf2[256] = {};
+
+    struct upgrade_type upgrade1 = car_table[id].traits.upgrade[0];
+    sprintf(buf2, "%f %f %f\n", upgrade1.a, upgrade1.aa, upgrade1.aaa);
+    strcat(buf,buf2);
+
+    strcpy(buf2, "upgrade2: ");
+    strcat(buf,buf2);
+    struct upgrade_type upgrade2 = car_table[id].traits.upgrade[1];
+    sprintf(buf2, "%f %f %f\n", upgrade2.a, upgrade2.aa, upgrade2.aaa);
+    strcat(buf,buf2);
+
+    printf("%s", buf);
+    printf("top speed: %d\n\n", car_table[id].traits.top_speed);
+    
+}
