@@ -45,6 +45,11 @@ void print_car(int id) {
     strcat(buf,buf2);
 
     printf("%s", buf);
-    printf("top speed: %d\n\n", car_table[id].traits.top_speed);
+    printf("top speed: %d\n", car_table[id].traits.top_speed);
+
+    strcpy(buf2,"");
+    struct output_type output = car_table[id].traits.output;
+    sprintf(buf2, "%f %f %f\n", output.a, output.aa, output.aaa);
+    printf("output: %s\n\n",buf2);
     
 }
